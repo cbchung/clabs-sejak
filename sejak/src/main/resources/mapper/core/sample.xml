@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="clabs.core.services.mapper.MembershipMapper">
+
+<update id="create">
+	CREATE TABLE member (
+		id			VARCHAR(64)	NOT NULL,
+		password	VARCHAR(64) NOT NULL,
+		name		VARCHAR(64),
+		
+		PRIMARY KEY			(id)
+	)
+</update>
+<update id="putOne"></update>
+<update id="getOne"></update>
+<update id="list"></update>
+
+</mapper>
