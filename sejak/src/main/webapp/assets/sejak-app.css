@@ -1,0 +1,46 @@
+@CHARSET "utf-8";
+
+body {
+	margin: 0px;
+	padding: 0px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+div {
+	padding: 5px;
+	border: solid 1px #EAEACC;
+}
+
+#headerSection {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+}
+
+#contentSection {
+	margin-top: 50px;
+}
+
+#footerSection {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+#extendedSection {
+	display: none;
+}
+
+#subPanel {
+	float: left;
+	width: 300px;
+	margin-right: 5px;
+}
+
+#mainPanel {
+
+}
