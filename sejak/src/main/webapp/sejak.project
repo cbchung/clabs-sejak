@@ -7,11 +7,15 @@
 			}
 		},
 		contexts : {
-			gnb : [ 'app-gnb', '/static-contexts/gnb.json' ]
+			gnb : [ 'app-gnb', '/static-contexts/gnb.json' ],
+			lnb : [ 'app-lnb', '/static-contexts/lnb.json' ]
 		},
 		modules : [ ]
 	}
 	
+	/*
+	 * 로딩완료시, event발생하여 Sejak.initProject()를 실행시켜줘야 함.
+	 */
 	jQuery(document).ready(function($){
 		Sejak.Project.modules.push('app');
 		Sejak.initProject();

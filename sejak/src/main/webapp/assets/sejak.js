@@ -74,20 +74,15 @@ Sejak = {
 			}
 			else $(el).attr('loaded', 'fail');
 		},
-		loadModel : function(pack, module){
-//			var project = Sejak.Project;
-//			for(var idx in project.modules){
-//				console.log('find package-1111 : ' + project.modules[idx]);
-//				if(project.models[idx].name == pack){
-//					console.log('find package : ' + project.models[idx].name);
-//					var items = project.models[idx].items;
-//					for(var k in items){
-//						if(items[k] == module){
-//							console.log('find module : ' + items[k].type);
-//						}
-//					}
-//				}
-//			}
+		loadContext : function(pack, module){
+			for(var key in Sejak.Project.contexts){
+				var ctx = Sejak.Project.contexts[key];
+				if(ctx[0] == (pack+"-"+module)){
+					console.log('OK-find package : ' + JSON.stringify(ctx));
+					return;
+				}
+			}
+			console.log("Can't-find package : " + pack+"-"+module);
 		}
 	},
 	tools : {
@@ -108,7 +103,7 @@ Sejak = {
 				$(this).attr('data-model-package', packageName);
 				$(this).attr('data-model-name', moduleName);
 
-				Sejak.ctx.loadModel(packageName, moduleName);
+				Sejak.ctx.loadContext(packageName, moduleName);
 			});
 		},
 		loadCSS : function(href) {
