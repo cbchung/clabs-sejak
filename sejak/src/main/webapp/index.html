@@ -3,24 +3,17 @@
 <head>
 	<meta charset="EUC-KR">
 	<title>Insert title here</title>
-	<link rel="stylesheet" href="assets/sejak-app.css">
+	<link rel="stylesheet" href="assets/app.css">
 	<script type="text/javascript" src="assets/jquery-2.1.4.min.js"></script>
-	<script type="text/javascript" src="assets/sejak-app.js"></script>
-	<script type="text/javascript">
-		SejakApp = { 
-			modules : ['sejak-framework'],
-			project : 'sejak-framework'
-			// 프로젝트 파일에서 데이터및 컨트롤을 적용시키는 모듈을 제작할 차례라고라....
-		};
-	</script>
+	<script type="text/javascript" src="assets/sejak.js"></script>
 </head>
 <body>
-	<div id="headerSection" sj-model="sejak-framework-gnb"></div>
+	<div id="headerSection" sj-model="gnb"></div>
 	<div id="contentSection">
-		<div id="subPanel" sj-model="sejak-framework-lnb"></div>
-		<div id="mainPanel" sj-model="sejak-framework-content">점점그렇게 간다는 말이네</div>
+		<div id="subPanel" sj-model="lnb"></div>
+		<div id="mainPanel" sj-model="content">점점그렇게 간다는 말이네</div>
 	</div>
-	<div id="footerSection" sj-model="sejak-framework-footer"></div>
+	<div id="footerSection" sj-model="footer"></div>
 	<div id="extendedSection"></div>
 </body>
 </html>

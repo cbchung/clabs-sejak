@@ -1,32 +1,41 @@
 /**
- * sejak-app
+ * sejak
  */
 
-SejakES = {
+Sejak = {
 	init : function(){
-		if("undefined" == typeof SejakApp) SejakApp = { modules : [] };
-		if("undefined" == typeof SejakApp.path){
-			var path = window.location.pathname;
-			SejakApp.path = path.substring(0, path.lastIndexOf('/')+1);
-		}
-		if(SejakApp.path.slice(-1) != '/') SejakApp.path += '/';		
-		console.log('SejakApp : '+ JSON.stringify(SejakApp));
+		/*
+		 * 1. set path
+		 */
+		var path = window.location.pathname;
+		Sejak.basePath=path.substring(0, path.lastIndexOf('/')+1);
+		console.log('load:' + Sejak.basePath);
+		if(Sejak.basePath.slice(-1) != '/') Sejak.basePath += '/';
+		console.log('load:' + Sejak.basePath);
 		
 		/*
-		 * make sejak-app node
+		 * 2. load project file
 		 */
-		var sejakAppE = $("<sejak-app/>");
-		$("head").append(sejakAppE);
+		this.tools.loadJS(Sejak.basePath + "sejak.project");
 
+		/*
+		 * 3. make sejak-app node
+		 */
+		var sejakAppE = $("<sejak-app></sejak-app>");
+		$("head").append(sejakAppE);
+		
+	},
+	initProject : function(){
 		/*
 		 * load modules
 		 */
-		this.loadModules(SejakApp.modules);
+		this.loadModules(Sejak.Project.modules);
+		console.log('load-project:' + JSON.stringify(Sejak.Project));
 	},
 	loadModules : function(modules){
 		for(var i in  modules){
 			var el = this.ctx.makeModuleElement(modules[i]);
-			this.tools.loadHTML(SejakApp.path + modules[i]+ ".module", el, this.ctx.moduleCallBack);
+			this.tools.loadHTML(Sejak.basePath + modules[i]+ ".module", el, this.ctx.moduleCallBack);
 		}
 		var modules = this.ctx.modules;
 		var tmTryCount = 0;
@@ -35,14 +44,14 @@ SejakES = {
 				if($(modules[i]).attr('loaded') == 'tring'){
 					if(tmTryCount++ > 3){
 						console.log('FAIL-toReceive timeouted');
-						SejakES.onLoadModules();
+						Sejak.onLoadModules();
 						return;
 					}
 					setTimeout(tmCheck, 500);
 					return;
 				}
 			}
-			SejakES.onLoadModules();
+			Sejak.onLoadModules();
 		};
 		setTimeout(tmCheck, 100);
 	},
@@ -64,6 +73,21 @@ SejakES = {
 				$(el).html(data);
 			}
 			else $(el).attr('loaded', 'fail');
+		},
+		loadModel : function(pack, module){
+//			var project = Sejak.Project;
+//			for(var idx in project.modules){
+//				console.log('find package-1111 : ' + project.modules[idx]);
+//				if(project.models[idx].name == pack){
+//					console.log('find package : ' + project.models[idx].name);
+//					var items = project.models[idx].items;
+//					for(var k in items){
+//						if(items[k] == module){
+//							console.log('find module : ' + items[k].type);
+//						}
+//					}
+//				}
+//			}
 		}
 	},
 	tools : {
@@ -76,6 +100,15 @@ SejakES = {
 		loadModels : function(){
 			$("[sj-model]").each(function(index){
 				console.log('js-model='+$(this).attr('sj-model'));
+				var model = $(this).attr('sj-model');
+				var idx = model.lastIndexOf('-');
+				var packageName = (idx == -1) ? 'app' : model.substring(0, idx);
+				var moduleName = (idx == -1) ? model : model.substring(idx+1);
+				console.log('p/n='+packageName + "/" + moduleName);
+				$(this).attr('data-model-package', packageName);
+				$(this).attr('data-model-name', moduleName);
+
+				Sejak.ctx.loadModel(packageName, moduleName);
 			});
 		},
 		loadCSS : function(href) {
@@ -97,5 +130,5 @@ SejakES = {
 };
 
 $(document).ready(function(){
-	SejakES.init();
+	Sejak.init();
 });

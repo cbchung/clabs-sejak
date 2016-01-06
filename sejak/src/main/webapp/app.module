@@ -3,7 +3,7 @@
 	 * model-sample
 	 ---------------------------------------------------------------------------------
 	{
-		project : 'sejak-frame-work',
+		project : 'sejak-framework',
 		items : {
 			left : [
 			    {link:'#home', text:'Home'},

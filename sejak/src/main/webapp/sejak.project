@@ -1,0 +1,19 @@
+(function(){
+	Sejak.Project = {
+		configure : {
+			cache : {
+				prefix : '/static-',
+				map : '/'
+			}
+		},
+		contexts : {
+			gnb : [ 'app-gnb', '/static-contexts/gnb.json' ]
+		},
+		modules : [ ]
+	}
+	
+	jQuery(document).ready(function($){
+		Sejak.Project.modules.push('app');
+		Sejak.initProject();
+	});
+})();
