@@ -1,38 +1,15 @@
-<!-- model data sample
-	/*
-	 * model-sample
-	 ---------------------------------------------------------------------------------
-	{
-		project : 'sejak-framework',
-		items : {
-			left : [
-			    {link:'#home', text:'Home'},
-			    {link:'#about', text:'About'},
-			    [
-					{link:'#action', text:'Action'},
-					{link:'#another-action', text:'Another action'},
-					{type:'separator'},
-					{type:'header', text:'Another action'},
-					{link:'#action', text:'Action'},
-					{link:'#action', text:'Action'}
-			    ],
-			],
-			right : [
-				{link:'#action', text:'Action'},
-				{link:'#action', text:'Action'},
-				{link:'#action', text:'Action'}
-			]
-		}
-	}
-	 */
- -->
-<cntl id="gnb">
+<cntl name="gnb">
 	ctx.projectName = 'default-project-name';
-	ctx.mapper = function(obj){
+	ctx.onData = function(obj){
+		console.log('111111111111');
 		ctx.projectName = obj.project;
-		$("#sejak-framework-gnb-navbar").html(ctx.makeItems(obj.items));
+		console.log('22222');
+		el("[name='navbar']").html(ctx.makeItems(obj.items));
+		console.log('3333333333');
 	};
 	ctx.makeItems = function(its){
+		console.log('44444444');
+		return 'hhh';
 	};
 </cntl>
 
@@ -40,7 +17,7 @@
 	<div class="navbar-header">
 		<a class="navbar-brand" href="#">{{projectName}}</a>
 	</div>
-	<div id="navbar" class="navbar-collapse collapse">
+	<div name="navbar" class="navbar-collapse collapse">
 	<!-- 
 		<ul class="nav navbar-nav">
 			<li class="active"><a href="#">Home</a></li>
@@ -65,5 +42,6 @@
             <li class="active"><a href="./">Fixed top <span class="sr-only">(current)</span></a></li>
 		</ul>
 	 -->
+	 kkkkk
 	</div><!--/.nav-collapse -->
 </gnb>
