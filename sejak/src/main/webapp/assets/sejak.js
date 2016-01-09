@@ -5,66 +5,136 @@
 Sejak = {
 	init : function(){
 		/*
-		 * 1. set path
+		 * 0. initialize this Package
+		 */
+		Sejak.initPackage();
+		
+		/*
+		 * 1. set Sejak.basePath
 		 */
 		var path = window.location.pathname;
 		Sejak.basePath=path.substring(0, path.lastIndexOf('/')+1);
-		console.log('load:' + Sejak.basePath);
 		if(Sejak.basePath.slice(-1) != '/') Sejak.basePath += '/';
-		console.log('load:' + Sejak.basePath);
 		
 		/*
-		 * 2. load project file
+		 * 2. make sj-info node
 		 */
-		this.tools.loadJS(Sejak.basePath + "sejak.project");
+		this.InfoE = $("<sj-info></sj-info>");
+		$("head").append(this.InfoE);
 
 		/*
-		 * 3. make sejak-app node
+		 * 3. load project file
+		 * >>프로젝트에서 Document Loading시, Sejak.initProject() 호출 요.
 		 */
-		var sejakAppE = $("<sejak-app></sejak-app>");
-		$("head").append(sejakAppE);
-		
+		Sejak.tk.resHandle.loadJS(Sejak.basePath + "app.project");
 	},
 	initProject : function(){
-		/*
-		 * load modules
-		 */
-		this.loadModules(Sejak.Project.modules);
-		console.log('load-project:' + JSON.stringify(Sejak.Project));
-	},
-	loadModules : function(modules){
-		for(var i in  modules){
-			var el = this.ctx.makeModuleElement(modules[i]);
-			this.tools.loadHTML(Sejak.basePath + modules[i]+ ".module", el, this.ctx.moduleCallBack);
+		for(var i in  Sejak.Project.modules){
+			var el = Sejak.ctx.makeModuleElement(Sejak.Project.modules[i]);
+			Sejak.tk.resHandle.loadHTML(Sejak.basePath + Sejak.Project.modules[i]+ ".module", el, Sejak.ctx.moduleCallBack);
 		}
-		var modules = this.ctx.modules;
+		var modules = Sejak.ctx.modules;
 		var tmTryCount = 0;
 		var tmCheck = function(){
 			for(var i in modules){
 				if($(modules[i]).attr('loaded') == 'tring'){
 					if(tmTryCount++ > 3){
 						console.log('FAIL-toReceive timeouted');
-						Sejak.onLoadModules();
+						Sejak.initPage();
 						return;
 					}
 					setTimeout(tmCheck, 500);
 					return;
 				}
 			}
-			Sejak.onLoadModules();
+			Sejak.initPage();
 		};
 		setTimeout(tmCheck, 100);
 	},
-	onLoadModules : function(){
-		console.log('complete loadModules-------');
-		this.tools.initPageTags();
+	initPage : function(){
+		Sejak.Contexts = [];
+		$('[sj-model]').each(function(index){
+			var sjModel = $(this).attr('sj-model');
+			$(this).attr('sj-mseq', index);
+			$(this).on('sjEvent', Sejak.ctx.eventHandle);
+//			$(this).on('click', Sejak.ctx.eventHandle);
+			
+			var ctx = { el : $(this), scope : {} };
+			Sejak.Contexts[index] = ctx;
+			
+			var pctx = Sejak.Project.contexts[sjModel];
+			if(pctx == undefined) return;	// not found this configure
+			
+			var idx = pctx[0].lastIndexOf('-');
+			
+			ctx.sjMseq = index;
+			ctx.sjController = pctx[0];
+			ctx.sjRef = pctx[1];
+			ctx.sjPack = idx==-1 ? 'app' : pctx[0].substring(0, idx);
+			ctx.sjCntl = idx==-1 ? pctx[0] : pctx[0].substring(idx+1);
+			ctx.view = $('sj-info ' + ctx.sjPack).find(ctx.sjCntl).html();
+			ctx.load = Sejak.ctx.load;
+			ctx.map = Sejak.ctx.map;
+			ctx.loadData = Sejak.ctx.loadData;
+			ctx.run = Sejak.ctx.run;
+			
+			ctx.load(ctx);
+			ctx.loadData(ctx, { project:'cbcworld' });
+			// ctx.map(ctx);
+			
+			$(this).trigger('sjEvent', Sejak.tk.event.message("notify", 'Notification'));
+		});
+	},
+	initPackage : function(){
+		var event = new CustomEvent('sjEvent', {
+			detail: Sejak.tk.event.params,
+			bubbles: true,
+			cancelable: true
+		});
+	},
+	tk : {
+		event : {
+			type : [ '_NS', 'notify' ],
+			params : {
+				type: 0,
+				message: {}
+			},
+			message : function(type, obj){
+				var find = false, k;
+				for(k in this.type) if(this.type[k] == type){
+					find = true;
+					break;
+				}
+				var _t = find ? k : 0;
+				return {
+					type: _t,
+					message: obj
+				};
+			}
+		},
+		resHandle : {
+			loadCSS : function(href) {
+				try{
+					var cssLink = $("<link rel='stylesheet' type='text/css' href='"+href+"'>");
+					$("head").append(cssLink); 
+				}catch(e){ console.log('loadCSS:' + e); }
+			},
+			loadJS : function(src) {
+				try{
+				     var jsLink = $("<script type='text/javascript' src='"+src+"'>");
+				     $("head").append(jsLink); 
+				}catch(e){ console.log('loadJS:' + e); }
+			},
+			loadHTML : function(url, e, s){
+				$.get( url, { "_": $.now() }, function( data ){ s(true, e, data); }, 'text').fail(function(){ if(fail !== undefined) s(false, e, null); });
+			}
+		}
 	},
 	ctx : {
 		pools : [],
 		makeModuleElement : function(name){
-			var moduleE = $("<module id='sejak-app-module-id-"+ name +"' loaded='tring'/>");
-			$("sejak-app").append(moduleE);
-//			this.modules.push(moduleE);
+			var moduleE = $("<"+ name +" loaded='tring'/>");
+			$(Sejak.InfoE).append(moduleE);
 			return moduleE;
 		},
 		moduleCallBack : function(rc, el, data){
@@ -74,93 +144,54 @@ Sejak = {
 			}
 			else $(el).attr('loaded', 'fail');
 		},
-		loadContext : function(pack, module, el){
-			var cntl = $('#sejak-app-module-id-'+pack).find("cntl[name='"+module+"']");
-			var view = $('#sejak-app-module-id-'+pack).find(module);
-			
-			
-			console.log('cntl:'+ $(cntl).text());
-			console.log('view:'+ $(view).html());
-			if($(cntl).text() == undefined || $(view).html() == undefined) return;
-			
-			var ctx = {
-				e : $(el),
-				scope : {},
-				view : $(view).html(),
-				cntl : eval("cntl= function(){ var ctx=this.scope, el=this.element; "+$(cntl).text()+"}"),
-				element : function(sel){
-					var html = $(this.e).html();
-					console.log('e-111111111111');
-					console.log(html);
-					$(this.e).find("[name='navbar']").css('border', 'solid 1px blue');
-					console.log('e-22222222222');
-					return $(this.e).find(sel);
-				},
-				onData : function(data){ this.scope.onData(data); this.execute(); },
-				execute : function(){
-//					var content = $(view).html();
-					var content = this.view;
-					var results = content.match(/\{{\s*\w+\s*}}/g);
-					for(var i in results){
-						var v = results[i].replace("{{", "").replace("}}","").trim();
-						content=content.replace(results[i], this.scope[v]);
-					}
-					console.log($(this.e).html());
-					$(this.e).html(content);
-					console.log($(this.e).html());
-				}
-			};
-			console.log('kkkkkkkk:'+ JSON.stringify(ctx));
-			this.pools.push(ctx);
-			ctx.cntl();
-			ctx.execute();
-			ctx.onData({project:'test'});
-		}
-	},
-	tools : {
-		initPageTags : function(){
-			this.loadDefaultStylers();
+		eventHandle : function(event, param){
+//			for(var e in event) console.log(e, ":" + event[e]);
+//			for(var e in param) console.log(e, ":" + param[e]);
+//			console.log('event.type' + event.type);
+//			console.log('event.target:' + $(event.target).attr('sj-mseq'));
+			console.log('param.type:' + param.type + ":" + param.message);
 		},
-		loadDefaultStylers : function(){
-			this.loadModels();
-		},
-		loadModels : function(){
-			$("[sj-model]").each(function(index){
-				console.log('js-model='+$(this).attr('sj-model'));
-				var model = $(this).attr('sj-model');
-				/*
-				var idx = model.lastIndexOf('-');
-				var packageName = (idx == -1) ? 'app' : model.substring(0, idx);
-				var moduleName = (idx == -1) ? model : model.substring(idx+1);
-				console.log('p/n='+packageName + "/" + moduleName);
-				$(this).attr('data-model-package', packageName);
-				$(this).attr('data-model-name', moduleName);
-				Sejak.ctx.loadContext(packageName, moduleName, $(this));
-				*/
-				var ctx = Sejak.Project.contexts[model];
-				if(ctx != undefined){
-					console.log('1111'+JSON.stringify(ctx));
-					var idx = model.lastIndexOf('-');
-					var packageName = (idx == -1) ? 'app' : model.substring(0, idx);
-					var moduleName = (idx == -1) ? model : model.substring(idx+1);
-					Sejak.ctx.loadContext(packageName, moduleName, $(this));
-				}
-			});
-		},
-		loadCSS : function(href) {
+		run : function($ctx){
+			var $scope = $ctx.scope;
+			var $elm = $ctx.el;
 			try{
-				var cssLink = $("<link rel='stylesheet' type='text/css' href='"+href+"'>");
-				$("head").append(cssLink); 
-			}catch(e){ console.log('loadCSS:' + e); }
+				eval($('sj-info ' + $ctx.sjPack).find("cntl[name='" + $ctx.sjCntl + "']").text())
+			}catch(e){
+				console.log('error:', e);
+			}
+			$ctx.view = $($elm).html();
+			$ctx.compiled = $ctx.view;
+			$ctx.map($ctx);
 		},
-		loadJS : function(src) {
-			try{
-			     var jsLink = $("<script type='text/javascript' src='"+src+"'>");
-			     $("head").append(jsLink); 
-			}catch(e){ console.log('loadJS:' + e); }
+		map : function(ctx){
+			var cont = ctx.compiled;
+			var results = cont.match(/\{{\s*\w+\s*}}/g);
+			for(var i in results){
+				var v = results[i].replace("{{", "").replace("}}","").trim();
+				cont=cont.replace(results[i], ctx.scope[v]);
+			}
+			$(ctx.el).html(cont);
 		},
-		loadHTML : function(url, e, s){
-			$.get( url, { "_": $.now() }, function( data ){ s(true, e, data); }, 'text').fail(function(){ if(fail !== undefined) s(false, e, null); });
+		loadData : function(ctx, data){
+			$(ctx.el).html(ctx.compiled);
+			if(ctx.scope.onData != undefined) ctx.scope.onData(data);
+			ctx.compiled = $(ctx.el).html();
+			ctx.map(ctx);
+		},
+		load : function(ctx){
+			if(ctx.scope.onCompile != undefined) ctx.scope.onCompile(ctx.view);
+			var cont = ctx.view;
+			if(cont != undefined){
+				var results = cont.match(/\$sj:(scope|ctx)\./g);
+				for(var i in results){
+					var v = results[i]
+						.replace('$sj:ctx', 'Sejak.Contexts[' + ctx.sjMseq +']')
+						.replace('$sj:scope', 'Sejak.Contexts[' + ctx.sjMseq +'].scope');
+					cont=cont.replace(results[i], v);
+				}
+			}
+			$(ctx.el).html(cont);
+			ctx.run(ctx);
 		}
 	}
 };

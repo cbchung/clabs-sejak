@@ -1,23 +1,25 @@
 <cntl name="gnb">
-	ctx.projectName = 'default-project-name';
-	ctx.onData = function(obj){
-		console.log('111111111111');
-		ctx.projectName = obj.project;
-		console.log('22222');
-		el("[name='navbar']").html(ctx.makeItems(obj.items));
-		console.log('3333333333');
+	$scope.projectName = 'default-project-name';
+	$scope.onData = function(obj){
+		$scope.projectName = obj.project;
+		$($elm).find("[name='navbar']").html($scope.makeItems(obj.items));
 	};
-	ctx.makeItems = function(its){
-		console.log('44444444');
+	$scope.makeItems = function(its){
 		return 'hhh';
 	};
+	$scope.onClick = function(msg){
+		alert('hi!----' + msg);
+	}
+	$scope.Data = [
+		1, 5, 3, 10, 6, 7
+	];
 </cntl>
 
 <gnb class="container">
 	<div class="navbar-header">
-		<a class="navbar-brand" href="#">{{projectName}}</a>
+		<a class="navbar-brand" href="#" onclick="$sj:scope.onClick('hello message')">{{projectName}}</a>
 	</div>
-	<div name="navbar" class="navbar-collapse collapse">
+	<div name="navbar" class="navbar-collapse collapse" data="$sj:ctx.scope.Data">
 	<!-- 
 		<ul class="nav navbar-nav">
 			<li class="active"><a href="#">Home</a></li>
