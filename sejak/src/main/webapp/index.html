@@ -8,7 +8,13 @@
 	<script type="text/javascript" src="assets/sejak.js"></script>
 </head>
 <body>
-	<div id="headerSection" sjm="app-gnb"></div>
+	<div id="headerSection" sjm="app-gnb" dref="./contexts/gnb.json">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="#" onclick="$sj:scope.onClick('hello message')">{{projectName}}</a>
+		</div>
+		<div name="navbar" class="navbar-collapse collapse">
+		</div>
+	</div>
 	<div id="contentSection">
 		<div id="subPanel" sjm="app-lnb"></div>
 		<div id="mainPanel" sjm="app-content">점점그렇게 간다는 말이네</div>

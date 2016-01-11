@@ -89,6 +89,7 @@ Sejak = {
 		 * make more event define
 		 */
 		new CustomEvent('sjEvent', { detail:{type:'', params:{}}, bubbles:true, cancelable:true });
+		new CustomEvent('sjMsg', { detail:{type:'', params:{}}, bubbles:true, cancelable:true });
 		
 		/*
 		 * add event handler
@@ -103,6 +104,9 @@ Sejak = {
 		Sejak.m.sj.model.prototype = {
 			onLoad : function(){},
 			onDataLoad : function(data){},
+			onMessage : function(){
+				
+			},
 			test : function(){ console.log('test', this.seq); }
 		};
 	},
@@ -115,6 +119,7 @@ Sejak = {
 			var pack = path.replace(/-/g, '.');
 			try{
 				Sejak.c[index] = eval('new Sejak.m.'+pack+'($(this), index)');
+				$(this).on('sjMsg', Sejak.c[index].onMessage);
 				Sejak.c[index].test();
 			}catch(e){ console.log('error', e); }
 		});
