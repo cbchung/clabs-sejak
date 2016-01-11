@@ -1,14 +1,13 @@
 (function(){
 	Sejak.Project = {
 		configure : {
-			cache : {
-				prefix : '/static-',
-				map : '/'
-			}
+			cache : [
+				{ prefix : '/static-', map : '/' }
+			]
 		},
 		contexts : {
-			gnb : [ 'app-gnb', '/static-contexts/gnb.json' ],
-			lnb : [ 'app-lnb', '/static-contexts/lnb.json' ]
+			gnb : [ 'app-gnb', '/static-sejak/contexts/gnb.json' ],
+			lnb : [ 'app-lnb', '/static-sejak/contexts/lnb.json' ]
 		},
 		modules : [ 'app' ]
 	}
