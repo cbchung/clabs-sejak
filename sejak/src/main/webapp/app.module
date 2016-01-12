@@ -1,13 +1,58 @@
 <gnb ext='sj-model'>
 	<cntl>
 		$scope.projectName = 'default-project-name';
+		console.log('in app.module---');
+		
+		$scope.onData = function(obj){
+			$scope.projectName = obj.project;
+			$($elm).find("[name='navbar']").html($scope.makeItems(obj.items));
+		};
+		$scope.makeItems = function(its){
+			var str = $scope.makeTopLevel('left', its.left);
+			str += $scope.makeTopLevel('right', its.right);
+			return str;
+		};
+		$scope.makeTopLevel = function(type, node){
+			var cls = (type == 'left') ? "nav navbar-nav" : "nav navbar-nav navbar-right";
+			var res = '<ul class="'+cls+'">';
+			for(var idx in node){
+				if(node[idx].type == 'dropdown'){
+					res += '<li class="dropdown">';
+					res += '<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>';
+					res += $scope.makeDropdown(node[idx]);
+					res += '</li>';
+				}
+				else res += '<li><a href="' + node[idx].ref + '">' + node[idx].name + '</a></li>'; 
+			}
+			res += '</ul>';
+			return res;		
+		};
+		$scope.makeDropdown = function(node){
+			var str = '<ul class="dropdown-menu">';
+			for(var i in node.ddd){
+				if(node.ddd[i].type == 'divider'){
+					str += '<li role="separator" class="divider"></li>';
+				}
+				else if(node.ddd[i].type == 'dropdown-header'){
+					str += '<li class="dropdown-header">'+node.ddd[i].name+'</li>';
+				}
+				else{
+					str += '<li><a href="'+node.ddd[i].ref+'">'+node.ddd[i].name+'</a></li>';
+				}
+			}
+			str += '</ul>';
+			return str;
+		};
+		$scope.onClick = function(msg){
+			alert(msg);
+		}
 	</cntl>
 	<view>
 		<div class="navbar-header">
 			<a class="navbar-brand" href="#" onclick="$sj:scope.onClick('hello message')">{{projectName}}</a>
 		</div>
 		<div name="navbar" class="navbar-collapse collapse" data="$sj:ctx.scope.Data">
-		</div><!--/.nav-collapse -->
+		</div>
 	</view>
 	<css>
 	</css>

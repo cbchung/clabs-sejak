@@ -98,16 +98,75 @@ Sejak = {
 	},
 	setPrimitives : function(){
 		Sejak.m.sj.model = function(el, seq){
+			this.el = el;
 			this.type = $(el).attr('sjm');
 			this.seq = seq;
+			this.scope = {};
 		}
 		Sejak.m.sj.model.prototype = {
-			onLoad : function(){},
-			onDataLoad : function(data){},
-			onMessage : function(){
-				
+			onLoad : function(){
+				console.log('onLoad---------------------:', this.source.css);
+				var run = function($ctx){
+					var $scope = $ctx.scope;
+					var $elm = $ctx.el;
+					try{
+						eval($ctx.source.cntl);
+					}catch(e){
+						console.log('error:', e);
+					}
+					
+					// $elm의 내용을 선행 바꾸기 원한다면, onCompile에서 오직 한 번 바꿀 수 있다.
+					if($scope.onCompile != undefined) $scope.onCompile();
+					$ctx.view = $($elm).html();
+					
+					var cont = $ctx.view;
+					var results = cont.match(/\$sj:(scope|ctx)\./g);
+					for(var i in results){
+						var v = results[i] == '$sj:ctx' ? 
+									'Sejak.c[' + $ctx.seq +'].' : 'Sejak.c[' + $ctx.seq +'].scope.';
+						cont=cont.replace(results[i], v);
+					}
+					$($ctx.el).html(cont);					
+					$ctx.compiled = cont;
+					$ctx.map();
+				};
+				run(this);
+				Sejak.event.sendMessage(this.el, 'onLoadComplete', { seq: this.seq });
 			},
-			test : function(){ console.log('test', this.seq); }
+			onDataLoad : function(data){
+				console.log('onDataLoad---------------------:', $(this.el).attr('dref'));
+				Sejak.tk.loadJSON($(this.el).attr('dref'), this, function(rc, ctx, data){
+					if(rc){
+						$(ctx.el).html(ctx.compiled);
+						if(ctx.scope.onData != undefined) ctx.scope.onData(data);
+						ctx.compiled = $(ctx.el).html();
+						ctx.map(ctx);
+					}
+					else console.log('dataLoad from ' + $(ctx.el).attr('dref') + " error");
+				});
+			},
+			onMessage : function(event, param){
+				console.log('type:'+param.type, param.params);
+				switch(param.type){
+					case 'onLoad' :
+						Sejak.c[param.params.seq].onLoad();
+						break;
+					case 'onLoadComplete' :
+						Sejak.c[param.params.seq].onDataLoad();
+						break;
+					default :
+						break;
+				}
+			},
+			map : function(){
+				var cont = this.compiled;
+				var results = cont.match(/\{{\s*\w+\s*}}/g);
+				for(var i in results){
+					var v = results[i].replace("{{", "").replace("}}","").trim();
+					cont=cont.replace(results[i], this.scope[v]);
+				}
+				$(this.el).html(cont);
+			}
 		};
 	},
 	loadProject : function(){
@@ -120,7 +179,8 @@ Sejak = {
 			try{
 				Sejak.c[index] = eval('new Sejak.m.'+pack+'($(this), index)');
 				$(this).on('sjMsg', Sejak.c[index].onMessage);
-				Sejak.c[index].test();
+				Sejak.event.sendMessage($(this), 'onLoad', { seq: index });
+//				Sejak.c[index].onMessage('sendingManualy', {});
 			}catch(e){ console.log('error', e); }
 		});
 	},
@@ -133,7 +193,10 @@ Sejak = {
 	},
 	event : {
 		sjEventListener : function(type, params){
-			
+			console.log('sjEventListener');
+		},
+		sendMessage : function(tgt, type, params){
+			$(tgt).trigger('sjMsg', {type:type, params:params});
 		}
 	},
 	tk : {
