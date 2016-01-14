@@ -1,0 +1,24 @@
+{
+    "project" : "sejak-editor",
+    "items" : {
+    	"left"  : [
+    		{ "name" : "Home", "ref" : "/#" },
+    		{ "name" : "About", "ref" : "/#" },
+    		{ "name" : "Contact", "ref" : "/#" },
+    		{ "name" : "Dropdown", "type" : "dropdown", "ddd" : [
+				{ "name" : "Action", "ref" : "/#" },
+				{ "name" : "Another action", "ref" : "/#" },
+				{ "name" : "Something else here", "ref" : "/#" },
+				{ "type" : "divider" },
+   				{ "type" : "dropdown-header", "name" : "Nav header" },
+   				{ "name" : "Separated link", "ref" : "/#" },
+   				{ "name" : "One more separated link", "ref" : "/#" }
+    		]}
+    	],
+    	"right" : [
+    		{ "name" : "Default", "ref" : "/#" },
+    		{ "name" : "Static top", "ref" : "/#" },
+    		{ "name" : "Fixed top", "ref" : "/#" }
+    	]
+    }
+}
