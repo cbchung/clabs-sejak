@@ -44,3 +44,53 @@ div {
 #mainPanel {
 
 }
+
+
+//----------------------
+		[model='gnb'] .navbar-header {
+			float: left;
+		}
+		[model='gnb'] .navbar-collapse {
+			float: left;
+			ul {
+				list-style; none;
+				padding: 0;
+				margin: 0;
+				li {
+					position: relative;
+					float: left;
+					a {
+						display: block;
+						background: black;
+						padding: 5px 10px 5px 10px;
+						white-space: no-wrap;
+						color: white;
+					}
+					a:hover {
+						background: #f00;
+					}
+				}
+			}
+			ul.right {
+				float: right;
+			}
+			li ul {
+				display: none;
+			}
+			li:hover{
+				ul {
+					display: block;
+					position: absolute;
+				}
+				li {
+					float: none;
+					a:hover {
+						background: black;
+					}
+				}
+				a {
+					backfround: #f00;
+				}
+			}
+		}
+
