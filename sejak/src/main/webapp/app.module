@@ -5,7 +5,9 @@
 		
 		$scope.onData = function(obj){
 			$scope.projectName = obj.project;
-			$($elm).find("[name='navbar']").html($scope.makeItems(obj.items));
+//			$($elm).find("[name='navbar']").html($scope.makeItems(obj.items));
+			$($elm).find("[name='navbar']").html($scope.makeTopLevel('left', obj.items.left));
+			$($elm).find("[name='navbar-right']").html($scope.makeTopLevel('right', obj.items.right));
 		};
 		$scope.makeItems = function(its){
 			var str = $scope.makeTopLevel('left', its.left);
@@ -13,12 +15,12 @@
 			return str;
 		};
 		$scope.makeTopLevel = function(type, node){
-			var cls = (type == 'left') ? "nav navbar-nav" : "nav navbar-nav navbar-right";
+			var cls = (type == 'left') ? "left" : "right";
 			var res = '<ul class="'+cls+'">';
 			for(var idx in node){
 				if(node[idx].type == 'dropdown'){
 					res += '<li class="dropdown">';
-					res += '<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>';
+					res += '<a href="#" class="dropdown-toggle" role="button" aria-haspopup="true" aria-expanded="false">Dropdown <span class="caret"></span></a>';
 					res += $scope.makeDropdown(node[idx]);
 					res += '</li>';
 				}
@@ -51,10 +53,62 @@
 		<div class="navbar-header">
 			<a class="navbar-brand" href="#" onclick="$sj:scope.onClick('hello message')">{{projectName}}</a>
 		</div>
-		<div name="navbar" class="navbar-collapse collapse" data="$sj:ctx.scope.Data">
-		</div>
+		<div name="navbar" class="navbar-collapse"></div>
+		<div name="navbar-right" class="navbar-collapse"></div>
 	</view>
 	<css>
+		[name='navbar'] { float: left; }
+		[name='navbar-right'] { float: right; }
+		[sjm='app-gnb'] .navbar-header {
+			float: left;
+			a {
+				display: block;
+				background: black;
+				padding: 5px 10px 5px 10px;
+				white-space: no-wrap;
+				color: white;
+			}
+		}
+		[sjm='app-gnb'] .navbar-collapse {
+			ul {
+				display: block;
+				list-style: none;
+				padding: 0;
+				margin: 0;
+				li {
+					position: relative;
+					float: left;
+					a {
+						display: block;
+						background: black;
+						padding: 5px 10px 5px 10px;
+						white-space: no-wrap;
+						color: white;
+					}
+					a:hover {
+						background: #f00;
+					}
+				}
+			}
+			li ul {
+				display: none;
+			}
+			li:hover{
+				ul {
+					display: block;
+					position: absolute;
+				}
+				li {
+					float: none;
+					a:hover {
+						background: black;
+					}
+				}
+				a {
+					background: #f00;
+				}
+			}
+		}
 	</css>
 </gnb>
 

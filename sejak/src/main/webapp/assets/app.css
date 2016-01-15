@@ -46,51 +46,51 @@ div {
 }
 
 
-//----------------------
-		[model='gnb'] .navbar-header {
-			float: left;
-		}
-		[model='gnb'] .navbar-collapse {
-			float: left;
-			ul {
-				list-style; none;
-				padding: 0;
-				margin: 0;
-				li {
-					position: relative;
-					float: left;
-					a {
-						display: block;
-						background: black;
-						padding: 5px 10px 5px 10px;
-						white-space: no-wrap;
-						color: white;
-					}
-					a:hover {
-						background: #f00;
-					}
-				}
-			}
-			ul.right {
-				float: right;
-			}
-			li ul {
-				display: none;
-			}
-			li:hover{
-				ul {
-					display: block;
-					position: absolute;
-				}
-				li {
-					float: none;
-					a:hover {
-						background: black;
-					}
-				}
-				a {
-					backfround: #f00;
-				}
-			}
-		}
-
+/* gen-preproc app-gnb	
+[sjm='app-gnb'] .navbar-header {
+	float: left;
+}
+[sjm='app-gnb'] .navbar-collapse ul li a {
+	display: block;
+	background: black;
+	padding: 5px 10px 5px 10px;
+	white-space: no-wrap;
+	color: white;
+}
+[sjm='app-gnb'] .navbar-collapse ul li a:hover {
+	background: #f00;
+}
+[sjm='app-gnb'] .navbar-collapse ul li {
+	position: relative;
+	float: left;
+}
+[sjm='app-gnb'] .navbar-collapse ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+[sjm='app-gnb'] .navbar-collapse ul.right {
+	float: right;
+}
+[sjm='app-gnb'] .navbar-collapse li ul {
+	display: none;
+}
+[sjm='app-gnb'] .navbar-collapse li:hover ul {
+	display: block;
+	position: absolute;
+}
+[sjm='app-gnb'] .navbar-collapse li:hover li a:hover {
+	background: black;
+}
+[sjm='app-gnb'] .navbar-collapse li:hover li {
+	float: none;
+}
+[sjm='app-gnb'] .navbar-collapse li:hover a {
+	background: #f00;
+}
+[sjm='app-gnb'] .navbar-collapse li:hover {
+}
+[sjm='app-gnb'] .navbar-collapse {
+	float: left;
+}
+*/

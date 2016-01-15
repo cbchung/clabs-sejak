@@ -17,5 +17,6 @@
 	 */
 	jQuery(document).ready(function($){
 		Sejak.initProject();
+		console.log('111');
 	});
 })();
