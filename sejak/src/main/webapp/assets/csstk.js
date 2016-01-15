@@ -14,6 +14,9 @@ var csstk = {
 		return -1;
 	},
 	parseBlock : function(str){
+		
+		var result = '';
+		
 		var f = str.indexOf('{');
 		var e = this.findEndof(str, f);
 		if(e == -1){
@@ -44,7 +47,7 @@ var csstk = {
 			 */
 	  		this.cssListStack.push(this.currentListStack.valueOf());
 	  		this.currentListStack = [];
-			this.parseBlock(b);
+			result += this.parseBlock(b);
 			this.currentListStack = this.cssListStack.pop();
 		}
 			
@@ -57,7 +60,7 @@ var csstk = {
 		for(var cs in this.cssStack) sbuf += this.cssStack[cs]+" "; sbuf += av + " {\n";
 		for(var l in this.currentListStack) sbuf += ("\t"+this.currentListStack[l]+"\n");	
 		sbuf += ("}\n");
-		console.log(sbuf);
+		result += sbuf;
 			
 		/*
 		 * goto sibling
@@ -66,7 +69,10 @@ var csstk = {
 		str = str.substring(e+1).trim();
 		if(str.length > 0){
 			this.currentListStack = [];
-			this.parseBlock(str);
+			result += this.parseBlock(str);
 		}
+		
+		return result;
 	}
 };	
+
