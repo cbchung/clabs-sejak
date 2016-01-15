@@ -38,10 +38,11 @@ public class HomeController {
 		
 		String formattedDate = dateFormat.format(date);
 		
-		model.addAttribute("serverTime", formattedDate );
-		int rc = memberService.create(null);
+//		model.addAttribute("serverTime", formattedDate );
+//		int rc = memberService.create(null);
 		
-		return "home:" + Integer.toString(rc);
+//		return "home:" + Integer.toString(rc);
+		return "home:" + formattedDate;
 	}
 	
 	/*
